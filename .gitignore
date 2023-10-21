@@ -131,3 +131,5 @@ fabric.properties
 ##########
 # Tauri
 /dist/
+/.xwin-cache
+/.cargo/config.toml
