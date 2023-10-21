@@ -3,11 +3,21 @@
 // #![cfg_attr(not(feature = "alloc"), )]
 
 use tauri::Manager;
+use resfront_entities::args::{GreetResult};
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
 fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
+}
+
+#[tauri::command]
+fn greet2(name: &str) -> GreetResult {
+    // Ok(
+    GreetResult {
+        res: format!("Hello, {}! You've been greeted from Rust!", name)
+    }
+    // )
 }
 
 fn main() {
@@ -23,7 +33,8 @@ fn main() {
             }
         )
         .invoke_handler(tauri::generate_handler![
-            greet
+            greet,
+            greet2
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

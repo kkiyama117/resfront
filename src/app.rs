@@ -2,14 +2,13 @@ use leptos::leptos_dom::ev::SubmitEvent;
 use leptos::*;
 use serde_wasm_bindgen::to_value;
 use wasm_bindgen::prelude::*;
-use resfront_entities::args::GreetArgs;
+use resfront_entities::args::{GreetArgs, GreetResult};
 
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(js_namespace = ["window", "__TAURI__", "tauri"])]
     async fn invoke(cmd: &str, args: JsValue) -> JsValue;
 }
-
 
 #[component]
 pub fn App() -> impl IntoView {
@@ -31,8 +30,9 @@ pub fn App() -> impl IntoView {
             }
             let args = to_value(&GreetArgs { name: &name.get() }).unwrap();
             // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-            // call tauri rust command
-            let new_msg = invoke("greet", args).await.as_string().unwrap();
+            let new_msg = serde_wasm_bindgen::from_value(invoke("greet", args).await).unwrap();
+            // dbg!(new_msg);
+            // let msg = serde_wasm_bindgen::from_value(new_msg).unwrap();
             set_greet_msg.set(new_msg);
         });
     };
