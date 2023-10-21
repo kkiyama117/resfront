@@ -1,3 +1,13 @@
+mod app;
+
+use app::*;
+use leptos::*;
+
+// Use leptos as frontend html builder
 fn main() {
-    println!("Hello, world!");
+    mount_to_body(|| {
+        view! {
+            <App/>
+        }
+    })
 }
