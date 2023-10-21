@@ -3,8 +3,8 @@ mod app;
 use app::*;
 use leptos::*;
 
-// Use leptos as frontend html builder
 fn main() {
+    // Use leptos as frontend html builder
     mount_to_body(|| {
         view! {
             <App/>
