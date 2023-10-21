@@ -1,8 +1,8 @@
 use leptos::leptos_dom::ev::SubmitEvent;
 use leptos::*;
-use serde::{Deserialize, Serialize};
 use serde_wasm_bindgen::to_value;
 use wasm_bindgen::prelude::*;
+use resfront_entities::args::GreetArgs;
 
 #[wasm_bindgen]
 extern "C" {
@@ -10,17 +10,14 @@ extern "C" {
     async fn invoke(cmd: &str, args: JsValue) -> JsValue;
 }
 
-#[derive(Serialize, Deserialize)]
-struct GreetArgs<'a> {
-    name: &'a str,
-}
 
 #[component]
 pub fn App() -> impl IntoView {
     // https://leptos-rs.github.io/leptos/view/01_basic_component.html
+    // variables
     let (name, set_name) = create_signal(String::new());
     let (greet_msg, set_greet_msg) = create_signal(String::new());
-
+    // fn
     let update_name = move |ev| {
         let v = event_target_value(&ev);
         set_name.set(v);
@@ -29,12 +26,12 @@ pub fn App() -> impl IntoView {
     let greet = move |ev: SubmitEvent| {
         ev.prevent_default();
         spawn_local(async move {
-            if name.get().is_empty() {
+            if { name.get() }.is_empty() {
                 return;
             }
-
             let args = to_value(&GreetArgs { name: &name.get() }).unwrap();
             // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
+            // call tauri rust command
             let new_msg = invoke("greet", args).await.as_string().unwrap();
             set_greet_msg.set(new_msg);
         });
