@@ -2,22 +2,17 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 // #![cfg_attr(not(feature = "alloc"), )]
 
+mod entities;
+
 use tauri::Manager;
-use resfront_entities::args::{GreetResult};
+use crate::entities::args::*;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
-}
-
-#[tauri::command]
-fn greet2(name: &str) -> GreetResult {
-    // Ok(
-    GreetResult {
-        res: format!("Hello, {}! You've been greeted from Rust!", name)
-    }
-    // )
+async fn greet(name: GreetArgs<'_>) -> Result<GreetResult, String> {
+    Ok(GreetResult {
+        res: format!("Hello, {}! You've been greeted from Rust!", name.name)
+    })
 }
 
 fn main() {
@@ -34,7 +29,6 @@ fn main() {
         )
         .invoke_handler(tauri::generate_handler![
             greet,
-            greet2
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
